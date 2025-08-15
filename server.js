@@ -48,9 +48,7 @@ app.use((err, req, res, next) => {
   res.status(err.status || 500).json({ message: err.message || 'Server error' });
 });
 
-app.get('/', (req, res) => {
-  res.send('✅ ServiceHub Backend is running');
-});
+
 
 // Changed from server.listen to app.listen
 app.listen(PORT, () => {
