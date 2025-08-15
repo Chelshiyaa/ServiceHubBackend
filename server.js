@@ -1,4 +1,4 @@
-// server/server.js
+
 const express = require('express');
 // Removed: const http = require('http'); // Import http module
 // Removed: const { Server } = require('socket.io'); // Import Server from socket.io
