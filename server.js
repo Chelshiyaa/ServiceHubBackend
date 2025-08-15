@@ -50,10 +50,10 @@ app.use((err, req, res, next) => {
 
 
 
-// Changed from server.listen to app.listen
-// app.listen(PORT, () => {
-//   console.log(`Server is running on port ${PORT}`);
-//   console.log(`Access backend at: http://localhost:${PORT}`);
-// });
+//Changed from server.listen to app.listen
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+  //console.log(`Access backend at: http://localhost:${PORT}`);
+});
 
-module.exports = app;
+ module.exports = app;
