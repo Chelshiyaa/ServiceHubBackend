@@ -1,4 +1,4 @@
-// routes/professionals.js
+// backend/routes/professionals.js
 const express = require('express');
 const Professional = require('../models/Professional');
 const router = express.Router();
@@ -18,30 +18,32 @@ function haversine(lat1, lon1, lat2, lon2) {
 router.get('/', async (req, res, next) => {
   try {
     const { city, near, radiusKm } = req.query;
-    let professionals = await Professional.find();
+    let query = {}; // Create an empty query object for Mongoose
 
+    // Add city filter to the query object for more efficient searching
     if (city) {
-      const c = city.trim().toLowerCase();
-      professionals = professionals.filter(p => (p.location?.city || '').toLowerCase().includes(c));
+      query['location.city'] = { $regex: new RegExp(city.trim(), 'i') };
     }
-
+    
+    // Use the query object to find professionals directly in the database
+    let professionals = await Professional.find(query);
+    
+    // Haversine distance filtering is still done in memory after the initial query
     if (near) {
       const [latStr, lngStr] = near.split(',');
       const lat = parseFloat(latStr);
       const lng = parseFloat(lngStr);
-      const radius = parseFloat(radiusKm || '5'); // default 5km
+      const radius = parseFloat(radiusKm || '5');
       if (!Number.isNaN(lat) && !Number.isNaN(lng)) {
         professionals = professionals.filter(p => {
           const plat = p.location?.lat;
           const plng = p.location?.lng;
-          if (plat == null || plng == null) {
-            return false;
-          }
+          if (plat == null || plng == null) return false;
           return haversine(lat, lng, plat, plng) <= radius;
         });
       }
     }
-
+    
     res.json(professionals);
   } catch (err) { next(err); }
 });
